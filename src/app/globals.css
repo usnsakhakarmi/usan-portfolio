@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens
+ * -------------
+ * Semantic colour tokens in OKLCH ("Violet / Pink" theme, dark only). Components use the
+ * Tailwind utilities generated from them (bg-bg, text-fg, text-muted, bg-accent, ...) and
+ * never raw colours, so a palette change happens here only.
+ *
+ * Contrast (WCAG 2.2): fg and muted pass 4.5:1 on bg and surface; accent-fg on accent
+ * passes 4.5:1; accent and pink pass 3:1 against bg for focus rings and other UI.
+ */
+
+:root {
+  --bg: oklch(0.145 0.006 300);
+  --surface: oklch(0.185 0.008 300);
+  --surface-2: oklch(0.235 0.01 300);
+  --fg: oklch(0.96 0.004 300);
+  --muted: oklch(0.7 0.012 300);
+  --border: oklch(0.29 0.012 300);
+  --accent: oklch(0.72 0.17 300);
+  --accent-fg: oklch(0.16 0.02 300);
+  --pink: oklch(0.68 0.19 350);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-pink: var(--pink);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* The oversized first name in the hero. */
+  --text-hero: clamp(5.5rem, 2.5rem + 13vw, 11rem);
+  --text-hero--line-height: 0.88;
+  --text-hero--letter-spacing: -0.045em;
+
+  /* Fluid type scale (~1.25 ratio). Display sizes clamp between mobile and desktop. */
+  --text-display: clamp(2.5rem, 1.6rem + 4.2vw, 4.75rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-h1: clamp(2rem, 1.5rem + 2.2vw, 3rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h2: clamp(1.5rem, 1.25rem + 1.1vw, 2rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.02em;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Keep anchored sections clear of the sticky header. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Lock page scroll behind an open modal (mobile menu). */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
