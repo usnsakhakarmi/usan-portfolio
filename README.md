@@ -1,80 +1,58 @@
-# Portfolio
+# Usan Sakhakarmi — Portfolio
 
-Personal portfolio site built with Next.js (App Router, Cache Components), TypeScript and
-Tailwind CSS v4. Every route is prerendered to static output.
+I'm a **QA Engineer** and **freelance full-stack developer** from Bhaktapur, Nepal. I test
+software like a skeptic and build it like a craftsman: by day I make sure products ship
+bug-free, and on the side I design and develop web apps for clients.
 
-## Requirements
+## Experience
 
-- Node.js 24 (see `.nvmrc`)
-- pnpm (`npm install -g pnpm`)
+- **Niural AI — Software QA Engineer** (2026 – present)
+  Functional, API, integration, regression and E2E testing of fintech and payroll workflows.
+  Playwright automation with the Page Object Model; QuickBooks, Slack, BambooHR and Xero
+  integration testing; RBAC and security-focused API testing; AWS event-driven workflows.
+- **Vairav Tech — Software Quality Assurance Engineer** (2025 – 2026)
+  Promoted from Associate. Tested cybersecurity and analytics products: ML-based anomaly
+  detection, rule-based and Sigma detections, multi-database testing, Kubernetes deployments
+  and report generation.
+- **Proshore Nepal — Software QA Intern** (2024 – 2025)
+  Test case design and execution, load testing with JMeter, API testing with Postman, and
+  automation with Playwright and Cypress.
 
-## Getting started
+## Projects I've tested
+
+- **UEBA** — ML-driven anomaly detection and real-time core–backend coordination over Kafka
+  and Centrifugo.
+- **Correlation Engine** — rule-based and Sigma detections, Redis synchronization and webhook
+  alerting.
+- **Agentless** — multi-database ingestion and privilege-role testing across PostgreSQL,
+  MySQL, MSSQL, Oracle and MongoDB.
+- **Node Configuration** — node labels, pod health and failure troubleshooting on Kubernetes.
+- **Vision Board** — end-to-end testing of project and task workflows, automated in
+  Playwright.
+
+## What I can do
+
+**As a QA Engineer**
+
+- Manual, functional, regression and exploratory testing
+- UI automation with Playwright and Cypress
+- API testing with Postman
+- Performance and load testing with k6, JMeter and Locust
+- Database testing with PostgreSQL, MySQL, MongoDB and DynamoDB
+- Test planning, test case design, bug reporting and test summary reports
+
+**As a freelance full-stack developer**
+
+- Responsive websites and web apps with JavaScript, TypeScript, HTML and CSS
+- Modern front ends with Next.js, React and Tailwind CSS (this portfolio is one)
+- Fast, static sites that can be hosted anywhere
+- Every project tested properly before it ships
+
+## Run
 
 ```bash
 pnpm install
-cp .env.example .env.local
 pnpm dev
 ```
 
 Open http://localhost:3000.
-
-## Scripts
-
-| Script           | What it does                                     |
-| ---------------- | ------------------------------------------------ |
-| `pnpm dev`       | Start the dev server                             |
-| `pnpm build`     | Production build (fails if a route isn't static) |
-| `pnpm start`     | Serve the production build                       |
-| `pnpm typecheck` | Generate route types and run `tsc`               |
-| `pnpm lint`      | ESLint, including the jsx-a11y rules             |
-| `pnpm format`    | Format with Prettier (sorts Tailwind classes)    |
-| `pnpm check`     | Typecheck + lint + format check (same as CI)     |
-
-## Project structure
-
-```
-src/
-  app/                 Routes, root layout, global styles and design tokens (globals.css)
-  components/
-    layout/            Header, footer, navigation, theme toggle, skip link
-    ui/                Presentational primitives (Container, Section, ...)
-  content/             Site content as typed data (no content lives in components)
-  lib/                 Utilities (cn, theme)
-```
-
-## Design tokens
-
-Colours are semantic CSS variables defined once in `src/app/globals.css` (`bg`, `surface`,
-`fg`, `muted`, `border`, `accent`, `accent-fg`) with light and dark values. Use the matching
-Tailwind utilities (`bg-bg`, `text-muted`, `border-border`, ...) instead of raw colours.
-
-## Updating content
-
-All personal content lives in `src/content/`. Edit the data, save, and the site updates; no
-component changes are needed.
-
-| File         | What it holds                                            |
-| ------------ | -------------------------------------------------------- |
-| `profile.ts` | Name, title, intro, email, location, resume path         |
-| `socials.ts` | Links shown in the hero and contact section (LinkedIn …) |
-| `site.ts`    | Site URL and locale                                      |
-
-Content is validated against the schemas in `src/lib/schema.ts`. A mistake (for example, an
-invalid email or URL) stops `pnpm dev` / `pnpm build` with an error naming the bad field.
-Optional fields (like `intro` or `resume`) are simply hidden on the site until they're filled
-in.
-
-## Deploying (static hosting, e.g. a `.com.np` cPanel host)
-
-The site is a **static export**: no Node.js server is needed. `pnpm build` writes plain
-HTML/CSS/JS to `out/`.
-
-1. Create `.env.production` with your domain (see `.env.example`):
-   `NEXT_PUBLIC_SITE_URL=https://your-domain.com.np`
-2. Run `pnpm build`.
-3. Upload **the contents of `out/`** (not the folder itself) to the web root on your host,
-   usually `public_html/`. Include the hidden `.htaccess` file.
-4. Open your domain. Updating the site later = edit content, `pnpm build`, upload again.
-
-`out/.htaccess` (from `public/.htaccess`) sets security headers, HTTPS redirect, caching and
-the 404 page on Apache/cPanel hosts. `public/_headers` does the same on Netlify/Cloudflare Pages.
