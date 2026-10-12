@@ -4,20 +4,6 @@ I'm a **QA Engineer** and **freelance full-stack developer** from Bhaktapur, Nep
 software like a skeptic and build it like a craftsman: by day I make sure products ship
 bug-free, and on the side I design and develop web apps for clients.
 
-## Experience
-
-- **Niural AI — Software QA Engineer** (2026 – present)
-  Functional, API, integration, regression and E2E testing of fintech and payroll workflows.
-  Playwright automation with the Page Object Model; QuickBooks, Slack, BambooHR and Xero
-  integration testing; RBAC and security-focused API testing; AWS event-driven workflows.
-- **Vairav Tech — Software Quality Assurance Engineer** (2025 – 2026)
-  Promoted from Associate. Tested cybersecurity and analytics products: ML-based anomaly
-  detection, rule-based and Sigma detections, multi-database testing, Kubernetes deployments
-  and report generation.
-- **Proshore Nepal — Software QA Intern** (2024 – 2025)
-  Test case design and execution, load testing with JMeter, API testing with Postman, and
-  automation with Playwright and Cypress.
-
 ## Projects I've tested
 
 - **UEBA** — ML-driven anomaly detection and real-time core–backend coordination over Kafka
