@@ -4,7 +4,7 @@ export const education: Education[] = [
   {
     level: "Degree",
     institution: "Bhaktapur Multiple Campus",
-    logo: "/education/tribhuvan-university.png",
+    logo: "/education/tribhuvan-university-logo.png",
     qualification: "Bachelor of Computer Application (BCA)",
     start: "2022",
     end: "2026",
@@ -12,7 +12,7 @@ export const education: Education[] = [
   },
   {
     level: "Higher Secondary",
-    institution: "Khwopa College",
+    institution: "Khwopa Higher Secondary School",
     logo: "/education/khwopa.png",
     qualification: "+2 Science",
     start: "2019",
