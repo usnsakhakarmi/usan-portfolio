@@ -102,6 +102,8 @@ export const educationSchema = z
     level: z.enum(["Degree", "Higher Secondary", "Secondary", "Certification", "Course"]),
     institution: z.string().min(1),
     qualification: z.string().min(1),
+    /** Institution logo in /public, e.g. "/education/khwopa.png". */
+    logo: z.string().startsWith("/").optional(),
     ...dateRange,
     details: bullets,
   })

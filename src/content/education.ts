@@ -4,6 +4,7 @@ export const education: Education[] = [
   {
     level: "Degree",
     institution: "Bhaktapur Multiple Campus",
+    logo: "/education/tribhuvan-university.png",
     qualification: "Bachelor of Computer Application (BCA)",
     start: "2022",
     end: "2026",
@@ -12,6 +13,7 @@ export const education: Education[] = [
   {
     level: "Higher Secondary",
     institution: "Khwopa College",
+    logo: "/education/khwopa.png",
     qualification: "+2 Science",
     start: "2019",
     end: "2021",
@@ -20,6 +22,7 @@ export const education: Education[] = [
   {
     level: "Secondary",
     institution: "Bright Star English School, Bhaktapur",
+    logo: "/education/bright-star.png",
     qualification: "Secondary Education Examination (SEE)",
     start: "2008-09",
     end: "2019-03",

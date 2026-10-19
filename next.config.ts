@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
   output: "export",
   // Emit `/about/index.html` instead of `/about.html`, which every host serves correctly.
   trailingSlash: true,
+  // No image-optimization server in a static export; images are served as-is.
+  images: { unoptimized: true },
   poweredByHeader: false,
   // Hide the floating Next.js "N" button in development; build errors still show in an overlay.
   devIndicators: false,
