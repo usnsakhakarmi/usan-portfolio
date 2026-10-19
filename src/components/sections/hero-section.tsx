@@ -3,12 +3,12 @@ import { getHeroStats, getProfile, getSocials, type HomeSection } from "@/lib/co
 import { Container } from "@/components/ui/container";
 import { ProfileCodeCard } from "@/components/content/profile-code-card";
 import { NowCard } from "@/components/content/now-card";
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 
 const primaryButton =
-  "inline-flex min-h-12 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-accent-fg transition-opacity hover:opacity-90";
+  "group inline-flex min-h-12 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-accent-fg shadow-[0_0_0_0_transparent] transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-8px_var(--accent)]";
 const outlineButton =
-  "inline-flex min-h-12 items-center gap-1.5 rounded-full border border-border px-5 text-sm font-semibold transition-colors hover:border-fg";
+  "group inline-flex min-h-12 items-center gap-1.5 rounded-full border border-border px-5 text-sm font-semibold transition-[border-color,translate] duration-300 hover:-translate-y-0.5 hover:border-fg";
 
 /** Pill styles cycle through the roles: filled accent, neutral, pink outline. */
 const rolePill = [
@@ -33,12 +33,21 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
     <section id="profile" aria-label={title} className="overflow-x-clip">
       <Container className="grid gap-16 pt-16 pb-8 md:pt-24 md:pb-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-7">
-          <p className="font-mono text-sm text-accent">{"// hello world, I'm"}</p>
+          <p className="load-in font-mono text-sm text-accent" style={delay(0)}>
+            {"// hello world, I'm"}
+          </p>
           <h1 className="mt-6 font-display text-hero font-bold">
-            {firstName}
+            <span className="mask-line">
+              <span className="mask-inner" style={delay(120)}>
+                {firstName}
+              </span>
+            </span>
             {restOfName && (
               // Surname in outline on its own line, sized to fit the column.
-              <span className="mt-2 block text-[clamp(2.5rem,0.25rem+11vw,6.5rem)] leading-none font-semibold tracking-[-0.005em] text-bg [-webkit-text-stroke:3px_var(--accent)] [paint-order:stroke_fill] lg:text-[clamp(4rem,0.25rem+6.8vw,6.5rem)]">
+              <span
+                style={delay(520)}
+                className="wipe-in mt-2 block text-[clamp(2.5rem,0.25rem+11vw,6.5rem)] leading-none font-semibold tracking-[-0.005em] text-bg [-webkit-text-stroke:3px_var(--accent)] [paint-order:stroke_fill] lg:text-[clamp(4rem,0.25rem+6.8vw,6.5rem)]"
+              >
                 {restOfName.trim()}
               </span>
             )}
@@ -49,8 +58,9 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
               {profile.roles.map((role, i) => (
                 <li
                   key={role}
+                  style={delay(760 + 80 * i)}
                   className={cn(
-                    "rounded-full border px-3.5 py-1.5 text-sm font-medium",
+                    "load-in rounded-full border px-3.5 py-1.5 text-sm font-medium",
                     rolePill[i % rolePill.length],
                   )}
                 >
@@ -61,10 +71,15 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
           )}
 
           {profile.intro && (
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">{profile.intro}</p>
+            <p
+              className="load-in mt-8 max-w-xl text-lg leading-relaxed text-muted"
+              style={delay(980)}
+            >
+              {profile.intro}
+            </p>
           )}
 
-          <dl className="mt-10 grid max-w-xl gap-6 sm:grid-cols-3">
+          <dl className="load-in mt-10 grid max-w-xl gap-6 sm:grid-cols-3" style={delay(1080)}>
             {facts.map((fact) => (
               <div key={fact.label}>
                 <dt className="font-mono text-[0.6875rem] tracking-widest text-muted uppercase">
@@ -72,7 +87,10 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
                 </dt>
                 <dd className="mt-1.5 flex items-center gap-2 text-sm font-medium break-all">
                   {fact.dot && (
-                    <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-accent" />
+                    <span
+                      aria-hidden="true"
+                      className="pulse-ring relative size-1.5 shrink-0 rounded-full bg-accent text-accent"
+                    />
                   )}
                   {fact.href ? (
                     <a href={fact.href} className="transition-colors hover:text-accent">
@@ -86,10 +104,13 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
             ))}
           </dl>
 
-          <div className="mt-10 flex flex-wrap items-center gap-3">
+          <div className="load-in mt-10 flex flex-wrap items-center gap-3" style={delay(1180)}>
             <a href="#contact" className={primaryButton}>
               Get in touch
-              <ArrowRight aria-hidden="true" className="size-4" />
+              <ArrowRight
+                aria-hidden="true"
+                className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+              />
             </a>
             {profile.resume && (
               <a href={profile.resume} download className={outlineButton}>
@@ -106,7 +127,10 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
                 className={outlineButton}
               >
                 {social.label}
-                <ArrowUpRight aria-hidden="true" className="size-4" />
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
                 <span className="sr-only">(opens in a new tab)</span>
               </a>
             ))}
@@ -117,16 +141,19 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
           {/* Soft violet/pink glow behind the cards. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -inset-x-16 -top-24 bottom-0 bg-[radial-gradient(closest-side,color-mix(in_oklch,var(--pink)_45%,transparent),color-mix(in_oklch,var(--accent)_14%,transparent)_55%,transparent)] blur-2xl"
+            className="glow-breathe pointer-events-none absolute -inset-x-16 -top-24 bottom-0 bg-[radial-gradient(closest-side,color-mix(in_oklch,var(--pink)_45%,transparent),color-mix(in_oklch,var(--accent)_14%,transparent)_55%,transparent)] blur-2xl"
           />
 
           <div className="relative flex flex-col gap-5">
-            <div className="relative">
-              <ProfileCodeCard profile={profile} />
+            <div className="card-in relative" style={delay(320)}>
+              <div className="float-soft">
+                <ProfileCodeCard profile={profile} />
+              </div>
               {profile.availability?.badge && (
                 <div
                   aria-hidden="true"
-                  className="absolute -top-14 -right-2 flex size-24 -rotate-6 items-center justify-center rounded-full bg-accent p-3 text-center font-display text-sm leading-[1.05] font-extrabold text-accent-fg uppercase shadow-lg lg:-right-6"
+                  style={delay(900)}
+                  className="card-in absolute -top-14 -right-2 flex size-24 -rotate-6 items-center justify-center rounded-full bg-accent p-3 text-center font-display text-sm leading-[1.05] font-extrabold text-accent-fg uppercase shadow-lg lg:-right-6"
                 >
                   <span>
                     {profile.availability.badge.split(" ").map((word, i) => (
@@ -138,7 +165,9 @@ export function HeroSection({ title }: Omit<HomeSection, "id">) {
                 </div>
               )}
             </div>
-            <NowCard items={profile.now} stats={getHeroStats()} />
+            <div className="card-in" style={delay(520)}>
+              <NowCard items={profile.now} stats={getHeroStats()} />
+            </div>
           </div>
         </div>
       </Container>

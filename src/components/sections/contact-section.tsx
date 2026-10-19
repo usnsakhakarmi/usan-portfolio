@@ -1,5 +1,6 @@
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { getProfile, getSocials, type HomeSection } from "@/lib/content";
+import { delay } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 
 /** "https://www.linkedin.com/in/name/" → "linkedin.com/in/name". */
@@ -16,16 +17,29 @@ export function ContactSection({ title }: Omit<HomeSection, "id">) {
         <div className="grid gap-12 border-t border-border pt-20 md:pt-28 lg:grid-cols-12 lg:items-center lg:gap-10">
           <div className="lg:col-span-7">
             <h2 className="font-display text-[clamp(3.25rem,1.5rem+6.5vw,6.5rem)] leading-[0.95] font-bold tracking-[-0.025em]">
-              Let&rsquo;s work <span className="block text-accent">together.</span>
+              {/* Two-stage reveal: each line rises from behind its own baseline. */}
+              <span data-reveal="mask" className="block">
+                <span>Let&rsquo;s work</span>
+              </span>{" "}
+              <span data-reveal="mask" style={delay(220, "reveal")} className="block">
+                <span className="tint-in text-accent">together.</span>
+              </span>
             </h2>
 
-            <div className="mt-10 flex flex-wrap items-center gap-3">
+            <div
+              data-reveal
+              style={delay(420, "reveal")}
+              className="mt-10 flex flex-wrap items-center gap-3"
+            >
               <a
                 href={`mailto:${profile.email}`}
-                className="inline-flex min-h-14 items-center gap-2 rounded-full bg-accent px-7 text-sm font-semibold break-all text-accent-fg transition-opacity hover:opacity-90"
+                className="group inline-flex min-h-14 items-center gap-2 rounded-full bg-accent px-7 text-sm font-semibold break-all text-accent-fg shadow-[0_10px_40px_-14px_var(--accent)] transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_50px_-10px_var(--accent)]"
               >
                 {profile.email}
-                <ArrowRight aria-hidden="true" className="size-4 shrink-0" />
+                <ArrowRight
+                  aria-hidden="true"
+                  className="size-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+                />
               </a>
               {profile.bookingUrl && (
                 <a
@@ -43,13 +57,13 @@ export function ContactSection({ title }: Omit<HomeSection, "id">) {
 
           {socials.length > 0 && (
             <ul className="space-y-3 lg:col-span-5">
-              {socials.map((social) => (
-                <li key={social.id}>
+              {socials.map((social, i) => (
+                <li key={social.id} data-reveal="right" style={delay(300 + 120 * i, "reveal")}>
                   <a
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-accent/50"
+                    className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-surface px-5 py-4 transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_18px_40px_-24px_var(--accent)]"
                   >
                     <span>
                       <span className="block font-display font-semibold">{social.label}</span>
@@ -59,7 +73,7 @@ export function ContactSection({ title }: Omit<HomeSection, "id">) {
                     </span>
                     <ArrowUpRight
                       aria-hidden="true"
-                      className="size-4 shrink-0 text-accent transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      className="size-4 shrink-0 text-accent transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
                     />
                     <span className="sr-only">(opens in a new tab)</span>
                   </a>

@@ -15,7 +15,7 @@ export function SiteHeader() {
     .toUpperCase();
 
   return (
-    <header className="sticky top-0 z-40 bg-bg/85 backdrop-blur-md">
+    <header className="header-scroll sticky top-0 z-40 bg-bg/85 backdrop-blur-md">
       <Container>
         <div className="flex h-20 items-center justify-between gap-4 border-b border-border">
           <Link href="/" className="flex items-center gap-3 rounded-md">

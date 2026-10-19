@@ -39,7 +39,7 @@ export function MainNav({ items }: { items: NavItem[] }) {
                 href={item.href}
                 aria-current={active ? "location" : undefined}
                 className={cn(
-                  "rounded-md px-2 py-2 font-mono text-xs transition-colors hover:text-fg",
+                  "nav-link rounded-md px-2 py-2 font-mono text-xs transition-colors hover:text-fg",
                   active ? "text-accent" : "text-muted",
                 )}
               >

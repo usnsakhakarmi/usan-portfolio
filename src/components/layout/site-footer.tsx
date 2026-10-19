@@ -10,7 +10,10 @@ export function SiteFooter() {
   return (
     <footer>
       <Container>
-        <div className="flex flex-col gap-3 border-t border-border py-8 text-xs text-muted sm:flex-row sm:items-center">
+        <div
+          data-reveal="fade"
+          className="flex flex-col gap-3 border-t border-border py-8 text-xs text-muted sm:flex-row sm:items-center"
+        >
           <p>
             © <CurrentYear /> {firstName} — {tagline}
           </p>

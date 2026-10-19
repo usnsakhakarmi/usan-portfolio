@@ -60,7 +60,7 @@
   html {
     scroll-behavior: smooth;
     /* Keep anchored sections clear of the sticky header. */
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -71,6 +71,8 @@
     font-size: 1.0625rem;
     line-height: 1.65;
     text-rendering: optimizeLegibility;
+    /* Side-sliding reveals must never create a horizontal scrollbar. */
+    overflow-x: clip;
   }
 
   /* Lock page scroll behind an open modal (mobile menu). */
@@ -102,4 +104,337 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/*
+ * Motion
+ * ------
+ * Everything that moves lives in this block and only runs for visitors who have not asked for
+ * reduced motion. With reduced motion (or no JavaScript) every element renders in its final,
+ * fully visible state. Only opacity, transform, clip-path and filter are animated.
+ */
+
+/* Ambient background: two slow violet orbs and a faint grid, behind everything. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--fg) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--fg) 4%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, black 0%, transparent 75%);
+}
+.ambient-orb {
+  position: absolute;
+  width: 46rem;
+  height: 46rem;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: 0.22;
+  will-change: transform;
+}
+.ambient-orb-a {
+  top: -18rem;
+  left: -14rem;
+  background: var(--accent);
+}
+.ambient-orb-b {
+  right: -16rem;
+  bottom: -20rem;
+  background: var(--pink);
+  opacity: 0.12;
+}
+/* Smaller, fainter orbs on phones: less purple wash and a cheaper blur. */
+@media (max-width: 767px) {
+  .ambient-orb {
+    width: 26rem;
+    height: 26rem;
+    filter: blur(90px);
+    opacity: 0.14;
+  }
+  .ambient-orb-b {
+    opacity: 0.08;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Keyframes ---- */
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+  @keyframes mask-up {
+    from {
+      transform: translateY(110%);
+    }
+  }
+  @keyframes wipe-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes card-in {
+    from {
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+    }
+  }
+  @keyframes float-soft {
+    to {
+      transform: translateY(-7px);
+    }
+  }
+  @keyframes pulse-ring {
+    from {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    to {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes drift-a {
+    to {
+      transform: translate(10vw, 8vh) scale(1.08);
+    }
+  }
+  @keyframes drift-b {
+    to {
+      transform: translate(-8vw, -10vh) scale(1.12);
+    }
+  }
+  @keyframes glow-breathe {
+    from {
+      opacity: 0.75;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+  }
+  @keyframes draw-down {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes travel-down {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes header-solid {
+    from {
+      background-color: transparent;
+      box-shadow: none;
+    }
+    to {
+      background-color: color-mix(in oklch, var(--bg) 88%, transparent);
+      box-shadow: 0 10px 30px -18px color-mix(in oklch, var(--accent) 45%, transparent);
+    }
+  }
+
+  /* ---- Ambient ---- */
+  .ambient-orb-a {
+    animation: drift-a 38s ease-in-out infinite alternate;
+  }
+  .ambient-orb-b {
+    animation: drift-b 46s ease-in-out infinite alternate;
+  }
+
+  /* ---- First load (hero). Content is readable as soon as each piece appears. ---- */
+  .load-in {
+    animation: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  /* Masked line: the text slides up from behind its own baseline. */
+  .mask-line {
+    display: block;
+    clip-path: inset(-0.1em -0.1em -0.18em -0.1em);
+  }
+  .mask-line > .mask-inner {
+    display: block;
+    animation: mask-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .wipe-in {
+    animation: wipe-in 1.1s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .card-in {
+    animation: card-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .float-soft {
+    animation: float-soft 6s ease-in-out 1.2s infinite alternate;
+  }
+  .glow-breathe {
+    animation: glow-breathe 9s ease-in-out infinite alternate;
+  }
+  .cursor-blink {
+    animation: blink 1.1s steps(1) infinite;
+  }
+  /* Soft expanding ring for "live" markers (availability dot, current job). The element must
+     be positioned (relative or absolute) so the ring can sit on top of it. */
+  .pulse-ring::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: currentColor;
+    animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+  }
+
+  /* ---- Scroll reveals. RevealObserver adds .is-visible once an element is on screen. ---- */
+  .js [data-reveal] {
+    transition:
+      opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+      clip-path 1s cubic-bezier(0.65, 0, 0.35, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .js [data-reveal]:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .js [data-reveal="left"]:not(.is-visible) {
+    transform: translateX(-36px);
+  }
+  .js [data-reveal="right"]:not(.is-visible) {
+    transform: translateX(36px);
+  }
+  .js [data-reveal="scale"]:not(.is-visible) {
+    transform: scale(0.6);
+  }
+  .js [data-reveal="fade"]:not(.is-visible) {
+    transform: none;
+  }
+  /* Masked line: the wrapper stays in place (so it can be observed) and clips its child,
+     which rises from below the baseline. */
+  .js [data-reveal="mask"] {
+    clip-path: inset(-0.1em -0.1em -0.18em -0.1em);
+  }
+  .js [data-reveal="mask"]:not(.is-visible) {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal="mask"] > * {
+    display: block;
+    transition:
+      transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+      color 1.2s ease;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .js [data-reveal="mask"]:not(.is-visible) > * {
+    transform: translateY(110%);
+  }
+  /* "together." also warms from white into the accent as it rises. */
+  .js [data-reveal="mask"]:not(.is-visible) > .tint-in {
+    color: var(--fg);
+  }
+  /* Timeline nodes pop in with a slight overshoot. */
+  .js [data-reveal="scale"] {
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Skill bars grow from zero to their real value once visible. */
+  .js .bar-fill {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .js .is-visible .bar-fill {
+    transform: scaleX(1);
+  }
+
+  /* ---- Timeline line drawn by scroll position (no JavaScript). ---- */
+  @supports (animation-timeline: view()) {
+    .tl-draw {
+      animation: draw-down linear both;
+      animation-timeline: view();
+      animation-range: entry 35% cover 60%;
+    }
+    .tl-travel {
+      animation: travel-down linear both;
+      animation-timeline: view();
+      animation-range: entry 35% cover 60%;
+    }
+
+    /* Header firms up as the page scrolls away from the top. */
+    .header-scroll {
+      animation: header-solid linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 140px;
+    }
+  }
+
+  /* ---- Project cards: pointer tilt and glow (set by TiltCard on fine pointers). ---- */
+  .tilt {
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+      translateY(var(--lift, 0px));
+    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .tilt[data-active] {
+    transition-duration: 0.12s;
+  }
+}
+
+/* Pointer-following highlight inside project cards (static when motion is reduced). */
+.tilt-glow {
+  background: radial-gradient(
+    380px circle at var(--mx, 50%) var(--my, 0%),
+    color-mix(in oklch, var(--accent) 16%, transparent),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.group:hover .tilt-glow,
+.group:focus-within .tilt-glow {
+  opacity: 1;
+}
+
+/* Animated underline for the main navigation. */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.5rem;
+  bottom: 0.2rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nav-link:hover::after,
+.nav-link[aria-current]::after {
+  transform: scaleX(1);
 }

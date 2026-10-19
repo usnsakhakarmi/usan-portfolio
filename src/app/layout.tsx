@@ -5,6 +5,7 @@ import { getProfile } from "@/lib/content";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MAIN_CONTENT_ID, SkipLink } from "@/components/layout/skip-link";
+import { RevealObserver } from "@/components/motion/reveal-observer";
 import "./globals.css";
 
 const inter = Inter({
@@ -54,9 +55,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={site.locale}
+      // The inline script adds a "js" class before paint, so the server markup differs.
+      suppressHydrationWarning
       className={`${inter.variable} ${interTight.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Scroll-reveal content starts hidden only when JavaScript can reveal it again. */}
+        <script
+          dangerouslySetInnerHTML={{ __html: `document.documentElement.classList.add("js")` }}
+        />
+      </head>
       <body id="top" className="flex min-h-full flex-col">
+        <div aria-hidden="true" className="ambient">
+          <div className="ambient-grid" />
+          <div className="ambient-orb ambient-orb-a" />
+          <div className="ambient-orb ambient-orb-b" />
+        </div>
+        <RevealObserver />
         <SkipLink />
         <SiteHeader />
         <main id={MAIN_CONTENT_ID} tabIndex={-1} className="flex-1 focus:outline-none">

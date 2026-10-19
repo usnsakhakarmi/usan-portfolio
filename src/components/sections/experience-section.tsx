@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { getExperience, getProfile, type HomeSection } from "@/lib/content";
 import { formatDateRange, formatDuration, formatYearMonth } from "@/lib/format";
 import type { Experience } from "@/lib/schema";
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
 import { Section } from "@/components/ui/section";
 import { TechList } from "@/components/content/tech-list";
 import { DurationUntilNow } from "@/components/content/duration-until-now";
@@ -72,48 +72,65 @@ function Connector({ from, accent = "violet" }: { from: Side; accent?: "violet" 
           from === "right" && "-scale-x-100",
         )}
       >
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{ height: BEND }}
-          className="absolute top-0 left-0 w-full overflow-visible"
+        {/* Drawn top-to-bottom as the row scrolls into view (CSS scroll-driven animation). */}
+        <div className="tl-draw absolute inset-0">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            style={{ height: BEND }}
+            className="absolute top-0 left-0 w-full overflow-visible"
+          >
+            <defs>
+              <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor={startColor} />
+                <stop offset="1" stopColor="var(--accent)" />
+              </linearGradient>
+            </defs>
+            {[
+              { width: LINE.glow, opacity: 0.12, dash: undefined },
+              { width: LINE.width, opacity: 1, dash: `${LINE.dash} ${LINE.gap}` },
+            ].map((line) => (
+              <path
+                key={line.width}
+                d="M 0 0 C 45 6, 100 30, 100 100"
+                fill="none"
+                stroke={`url(#${gradientId})`}
+                strokeWidth={line.width}
+                strokeOpacity={line.opacity}
+                strokeDasharray={line.dash}
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+          </svg>
+          <span
+            className="absolute bottom-0 bg-current opacity-[0.12]"
+            style={{ top: BEND, right: -LINE.glow / 2, width: LINE.glow }}
+          />
+          <span
+            className="absolute bottom-0"
+            style={{
+              top: BEND,
+              right: -LINE.width / 2,
+              width: LINE.width,
+              backgroundImage: dashes,
+            }}
+          />
+        </div>
+        {/* Travelling light: rides the drawing edge, visible along the straight drop. */}
+        <span
+          className="absolute inset-y-0 w-4"
+          style={{ right: -8, clipPath: `inset(${BEND} 0 0 0)` }}
         >
-          <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor={startColor} />
-              <stop offset="1" stopColor="var(--accent)" />
-            </linearGradient>
-          </defs>
-          {[
-            { width: LINE.glow, opacity: 0.12, dash: undefined },
-            { width: LINE.width, opacity: 1, dash: `${LINE.dash} ${LINE.gap}` },
-          ].map((line) => (
-            <path
-              key={line.width}
-              d="M 0 0 C 45 6, 100 30, 100 100"
-              fill="none"
-              stroke={`url(#${gradientId})`}
-              strokeWidth={line.width}
-              strokeOpacity={line.opacity}
-              strokeDasharray={line.dash}
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </svg>
-        <span
-          className="absolute bottom-0 bg-current opacity-[0.12]"
-          style={{ top: BEND, right: -LINE.glow / 2, width: LINE.glow }}
-        />
-        <span
-          className="absolute bottom-0"
-          style={{ top: BEND, right: -LINE.width / 2, width: LINE.width, backgroundImage: dashes }}
-        />
+          <span className="tl-travel absolute inset-0 block">
+            <span className="absolute bottom-0 left-1/2 size-2 -translate-x-1/2 rounded-full bg-fg shadow-[0_0_10px_3px_var(--accent)]" />
+          </span>
+        </span>
       </div>
       {/* Mobile: a straight dashed rail. */}
       <span
         aria-hidden="true"
         className={cn(
-          "absolute top-[1.375rem] left-[1.375rem] h-full -translate-x-px border-l-2 border-dashed lg:hidden",
+          "tl-draw absolute top-[1.375rem] left-[1.375rem] h-full -translate-x-px border-l-2 border-dashed lg:hidden",
           accent === "pink" ? "border-pink/70" : "border-accent/70",
         )}
       />
@@ -125,17 +142,22 @@ function Connector({ from, accent = "violet" }: { from: Side; accent?: "violet" 
 function Node({
   children,
   variant = "solid",
+  live = false,
 }: {
   children: React.ReactNode;
   variant?: "solid" | "next";
+  /** The current role: a slow pulse marks it as ongoing. */
+  live?: boolean;
 }) {
   return (
     <span
       aria-hidden="true"
+      data-reveal="scale"
       className="relative z-10 flex size-11 items-center justify-center rounded-full border border-border bg-surface lg:size-14"
     >
+      {live && <span className="pulse-ring absolute inset-1.5 rounded-full text-accent/60" />}
       {variant === "solid" ? (
-        <span className="flex size-8 items-center justify-center rounded-full bg-accent font-mono text-[0.625rem] font-medium text-accent-fg shadow-[0_0_18px_-2px_var(--accent)] lg:size-10 lg:text-xs">
+        <span className="relative flex size-8 items-center justify-center rounded-full bg-accent font-mono text-[0.625rem] font-medium text-accent-fg shadow-[0_0_18px_-2px_var(--accent)] lg:size-10 lg:text-xs">
           {children}
         </span>
       ) : (
@@ -156,7 +178,7 @@ function OutlinedYear({ children }: { children: React.ReactNode }) {
 }
 
 const cardClass =
-  "rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-accent/40 lg:p-7";
+  "rounded-2xl border border-border bg-surface p-5 transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_24px_50px_-28px_var(--accent)] lg:p-7";
 /** Accent bar on the card's left edge, beside the heading. */
 const cardHeading =
   "relative font-display text-xl font-bold before:absolute before:inset-y-0.5 before:-left-5 before:w-0.5 before:rounded-full before:bg-accent lg:text-2xl lg:before:-left-7";
@@ -291,6 +313,8 @@ export function ExperienceSection({ index, title, subtitle }: Omit<HomeSection, 
             <Node variant="next">?</Node>
           </div>
           <div
+            data-reveal="fade"
+            style={delay(200, "reveal")}
             className={cn(
               "col-start-2 row-start-1 self-center lg:self-start lg:pt-[2.125rem]",
               nextSide === "right"
@@ -330,7 +354,7 @@ export function ExperienceSection({ index, title, subtitle }: Omit<HomeSection, 
                   layout[side].node,
                 )}
               >
-                <Node>{String(i + 1).padStart(2, "0")}</Node>
+                <Node live={i === 0 && job.end === null}>{String(i + 1).padStart(2, "0")}</Node>
                 {isLast && (
                   <span
                     aria-hidden="true"
@@ -344,7 +368,11 @@ export function ExperienceSection({ index, title, subtitle }: Omit<HomeSection, 
                 )}
               </div>
 
-              <div className={cn("col-start-2 row-start-1 lg:pt-7", layout[side].meta)}>
+              <div
+                data-reveal
+                style={delay(180, "reveal")}
+                className={cn("col-start-2 row-start-1 lg:pt-7", layout[side].meta)}
+              >
                 <p>
                   <span className="sr-only">{formatDateRange(job.start, job.end)}</span>
                   <span aria-hidden="true">
@@ -370,6 +398,9 @@ export function ExperienceSection({ index, title, subtitle }: Omit<HomeSection, 
               </div>
 
               <div
+                // Cards slide in from their own side of the timeline.
+                data-reveal={side}
+                style={delay(80, "reveal")}
                 className={cn(
                   "col-start-2 row-start-2 mt-5 lg:row-start-1 lg:mt-0",
                   layout[side].card,

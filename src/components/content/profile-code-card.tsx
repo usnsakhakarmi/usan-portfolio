@@ -50,6 +50,10 @@ export function ProfileCodeCard({ profile }: { profile: Profile }) {
             </span>
           ))}
           {"};"}
+          <span
+            aria-hidden="true"
+            className="cursor-blink ml-1 inline-block h-[1.1em] w-[0.5em] translate-y-[0.2em] bg-accent/80"
+          />
         </code>
       </pre>
     </figure>

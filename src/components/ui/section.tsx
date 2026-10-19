@@ -19,7 +19,10 @@ export function Section({ id, index, title, subtitle, className, children }: Sec
   return (
     <section id={id} aria-labelledby={headingId} className={cn("py-16 md:py-20", className)}>
       <Container>
-        <header className="flex items-center gap-5 border-b border-border pb-8 md:gap-16 md:pb-10">
+        <header
+          data-reveal
+          className="flex items-center gap-5 border-b border-border pb-8 md:gap-16 md:pb-10"
+        >
           <p
             aria-hidden="true"
             className="font-display text-[clamp(3.25rem,2.25rem+6vw,6.5rem)] leading-none font-medium tracking-tight text-bg [-webkit-text-stroke:3px_var(--accent)] [paint-order:stroke_fill]"

@@ -1,7 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import { getProjects, type HomeSection } from "@/lib/content";
 import type { Project, ProjectCategory } from "@/lib/schema";
-import { cn } from "@/lib/utils";
+import { cn, delay } from "@/lib/utils";
+import { TiltCard } from "@/components/motion/tilt-card";
 import { Section } from "@/components/ui/section";
 import { TechList } from "@/components/content/tech-list";
 
@@ -83,65 +84,72 @@ function ProjectCard({ project, index, wide }: { project: Project; index: number
   const headingId = `project-${project.slug}`;
 
   return (
-    <article
-      aria-labelledby={headingId}
-      className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-2 transition-colors hover:border-accent/40"
-    >
-      {/* Decorative preview. */}
-      <div
-        aria-hidden="true"
-        className="relative h-44 overflow-hidden rounded-xl md:h-48"
-        style={{ background: `linear-gradient(160deg, ${tint} 0%, var(--surface) 95%)` }}
+    <TiltCard className="h-full">
+      <article
+        aria-labelledby={headingId}
+        className="group relative isolate flex h-full flex-col rounded-2xl border border-border bg-surface p-2 transition-[border-color,box-shadow] duration-300 focus-within:ring-2 focus-within:ring-accent/60 hover:border-accent/50 hover:shadow-[0_30px_60px_-30px_var(--accent)]"
       >
-        <span className="absolute top-3 left-4 font-mono text-[0.625rem] text-fg/80">
-          {String(index + 1).padStart(2, "0")}
-        </span>
+        {/* Highlight that follows the pointer (position set by TiltCard). */}
         <div
-          className={cn(
-            "absolute bottom-0 h-[78%] overflow-hidden rounded-t-lg border border-b-0 border-border bg-bg/95 shadow-2xl transition-transform duration-300 group-hover:-translate-y-1",
-            wide ? "inset-x-[16%]" : "inset-x-[9%]",
-          )}
+          aria-hidden="true"
+          className="tilt-glow pointer-events-none absolute inset-0 -z-10 rounded-2xl"
+        />
+        {/* Decorative preview. */}
+        <div
+          aria-hidden="true"
+          className="relative h-44 overflow-hidden rounded-xl md:h-48"
+          style={{ background: `linear-gradient(160deg, ${tint} 0%, var(--surface) 95%)` }}
         >
-          <div className="flex gap-1 px-3 pt-2.5">
-            {[0, 1, 2].map((dot) => (
-              <span key={dot} className="size-1.5 rounded-full bg-muted/50" />
-            ))}
+          <span className="absolute top-3 left-4 font-mono text-[0.625rem] text-fg/80">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <div
+            className={cn(
+              "absolute bottom-0 h-[78%] overflow-hidden rounded-t-lg border border-b-0 border-border bg-bg/95 shadow-2xl transition-transform duration-500 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.03]",
+              wide ? "inset-x-[16%]" : "inset-x-[9%]",
+            )}
+          >
+            <div className="flex gap-1 px-3 pt-2.5">
+              {[0, 1, 2].map((dot) => (
+                <span key={dot} className="size-1.5 rounded-full bg-muted/50" />
+              ))}
+            </div>
+            {index % 2 === 0 ? <CodePreview project={project} /> : <BoardPreview />}
           </div>
-          {index % 2 === 0 ? <CodePreview project={project} /> : <BoardPreview />}
         </div>
-      </div>
 
-      <div className="flex flex-1 flex-col px-4 pt-5 pb-4 md:px-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-[0.625rem] tracking-widest text-accent uppercase">
-              {project.label ?? categoryLabels[project.category]}
-            </p>
-            <h3 id={headingId} className="mt-1.5 font-display text-xl font-bold">
-              {project.title}
-            </h3>
+        <div className="flex flex-1 flex-col px-4 pt-5 pb-4 md:px-5">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-mono text-[0.625rem] tracking-widest text-accent uppercase">
+                {project.label ?? categoryLabels[project.category]}
+              </p>
+              <h3 id={headingId} className="mt-1.5 font-display text-xl font-bold">
+                {project.title}
+              </h3>
+            </div>
+            {href && (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-fg transition-[scale,box-shadow] duration-300 hover:scale-110 hover:shadow-[0_0_20px_-4px_var(--accent)]"
+              >
+                <ArrowUpRight aria-hidden="true" className="size-4" />
+                <span className="sr-only">Open {project.title} (opens in a new tab)</span>
+              </a>
+            )}
           </div>
-          {href && (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-fg transition-transform hover:scale-105"
-            >
-              <ArrowUpRight aria-hidden="true" className="size-4" />
-              <span className="sr-only">Open {project.title} (opens in a new tab)</span>
-            </a>
+          {project.summary && <p className="mt-2 text-sm text-muted">{project.summary}</p>}
+          {project.company && (
+            <p className="mt-2 text-xs text-muted">
+              <span className="text-accent">@ {project.company}</span>
+            </p>
           )}
+          <TechList items={project.tech} className="mt-auto pt-6" />
         </div>
-        {project.summary && <p className="mt-2 text-sm text-muted">{project.summary}</p>}
-        {project.company && (
-          <p className="mt-2 text-xs text-muted">
-            <span className="text-accent">@ {project.company}</span>
-          </p>
-        )}
-        <TechList items={project.tech} className="mt-auto pt-6" />
-      </div>
-    </article>
+      </article>
+    </TiltCard>
   );
 }
 
@@ -154,7 +162,12 @@ export function ProjectsSection({ index, title, subtitle }: Omit<HomeSection, "i
         {projects.map((project, i) => {
           const span = spanFor(i, projects.length);
           return (
-            <li key={project.slug} className={span.className}>
+            <li
+              key={project.slug}
+              data-reveal
+              style={delay(100 * (i % 3), "reveal")}
+              className={span.className}
+            >
               <ProjectCard project={project} index={i} wide={span.wide} />
             </li>
           );
