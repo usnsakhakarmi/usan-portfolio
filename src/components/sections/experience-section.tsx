@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { getExperience, getProfile, type HomeSection } from "@/lib/content";
 import { formatDateRange, formatDuration, formatYearMonth } from "@/lib/format";
@@ -178,10 +179,37 @@ function OutlinedYear({ children }: { children: React.ReactNode }) {
 }
 
 const cardClass =
-  "rounded-2xl border border-border bg-surface p-5 transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_24px_50px_-28px_var(--accent)] lg:p-7";
-/** Accent bar on the card's left edge, beside the heading. */
-const cardHeading =
-  "relative font-display text-xl font-bold before:absolute before:inset-y-0.5 before:-left-5 before:w-0.5 before:rounded-full before:bg-accent lg:text-2xl lg:before:-left-7";
+  "group/card rounded-2xl border border-border bg-surface p-5 transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_24px_50px_-28px_var(--accent)] lg:p-7";
+/** Card header row with an accent bar on the card's left edge. */
+const cardHeader =
+  "relative flex items-center gap-4 before:absolute before:inset-y-1 before:-left-5 before:w-0.5 before:rounded-full before:bg-accent lg:before:-left-7";
+const titleClass = "font-display text-xl leading-tight font-bold lg:text-2xl";
+
+/**
+ * Company logo tile. Square logos fill a rounded square; wide wordmarks sit on a white tile.
+ * `alt` is empty when the company is already named next to it.
+ */
+function CompanyLogo({ logo, alt = "" }: { logo: Experience["logo"]; alt?: string }) {
+  if (!logo) return null;
+  const wordmark = logo.shape === "wordmark";
+
+  return (
+    <span
+      className={cn(
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-[0_10px_28px_-14px_var(--accent)] ring-1 ring-border transition-transform duration-300 group-hover/card:scale-105",
+        wordmark ? "h-12 bg-white px-3.5" : "size-12",
+      )}
+    >
+      <Image
+        src={logo.src}
+        alt={alt}
+        width={wordmark ? 470 : 128}
+        height={wordmark ? 96 : 128}
+        className={wordmark ? "h-7 w-auto" : "size-full object-cover"}
+      />
+    </span>
+  );
+}
 
 function JobCard({ job }: { job: Experience }) {
   return job.roles.length > 1 ? <PromotionCard job={job} /> : <SingleRoleCard job={job} />;
@@ -193,13 +221,18 @@ function SingleRoleCard({ job }: { job: Experience }) {
 
   return (
     <article className={cardClass}>
-      <h3 className={cardHeading}>{role.title}</h3>
-      <p className="mt-1 text-xs text-muted">
-        <span className="text-sm font-medium text-accent">@ {job.company}</span>
-        {[job.type, job.workMode, job.location].filter(Boolean).map((part) => (
-          <span key={part}> · {part}</span>
-        ))}
-      </p>
+      <div className={cardHeader}>
+        <CompanyLogo logo={job.logo} />
+        <div className="min-w-0">
+          <h3 className={titleClass}>{role.title}</h3>
+          <p className="mt-1 text-xs text-muted">
+            <span className="text-sm font-medium text-accent">@ {job.company}</span>
+            {[job.type, job.workMode, job.location].filter(Boolean).map((part) => (
+              <span key={part}> · {part}</span>
+            ))}
+          </p>
+        </div>
+      </div>
       <ul className="mt-5 space-y-2.5 text-sm text-muted">
         {role.highlights.slice(0, HOME_HIGHLIGHTS).map((highlight) => (
           <li key={highlight} className="flex gap-3">
@@ -220,8 +253,18 @@ const PROMOTION_HIGHLIGHTS = 2;
 function PromotionCard({ job }: { job: Experience }) {
   return (
     <article className={cardClass}>
-      <h3 className={cardHeading}>{job.company}</h3>
-      <p className="mt-1.5 text-sm text-muted">
+      {/* A wordmark logo already spells the company name, so it becomes the heading. */}
+      <h3 className={cardHeader}>
+        {job.logo?.shape === "wordmark" ? (
+          <CompanyLogo logo={job.logo} alt={job.company} />
+        ) : (
+          <>
+            <CompanyLogo logo={job.logo} />
+            <span className={titleClass}>{job.company}</span>
+          </>
+        )}
+      </h3>
+      <p className="mt-3 text-sm text-muted">
         {[job.type, job.workMode, job.location].filter(Boolean).join(" · ")}
       </p>
 

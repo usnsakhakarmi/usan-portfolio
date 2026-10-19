@@ -74,6 +74,13 @@ export const experienceSchema = z
   .object({
     company: z.string().min(1),
     companyUrl: z.url().optional(),
+    /** Company logo in /public. "wordmark" logos (wide text marks) get a wider white tile. */
+    logo: z
+      .object({
+        src: z.string().startsWith("/"),
+        shape: z.enum(["square", "wordmark"]).default("square"),
+      })
+      .optional(),
     /** Shown beside the company and under the year, e.g. "Full-time". */
     type: z.enum(["Full-time", "Part-time", "Contract", "Freelance", "Internship"]).optional(),
     workMode: z.enum(["On-site", "Remote", "Hybrid"]).optional(),

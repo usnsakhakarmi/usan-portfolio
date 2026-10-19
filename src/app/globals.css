@@ -322,10 +322,18 @@
     transform: translateY(24px);
   }
   .js [data-reveal="left"]:not(.is-visible) {
-    transform: translateX(-36px);
+    transform: translateX(-24px);
   }
   .js [data-reveal="right"]:not(.is-visible) {
-    transform: translateX(36px);
+    transform: translateX(24px);
+  }
+  /* Below the desktop layout, side slides would push the page wider than the screen (mobile
+     browsers then zoom out), so those elements rise instead. */
+  @media (max-width: 1023px) {
+    .js [data-reveal="left"]:not(.is-visible),
+    .js [data-reveal="right"]:not(.is-visible) {
+      transform: translateY(24px);
+    }
   }
   .js [data-reveal="scale"]:not(.is-visible) {
     transform: scale(0.6);

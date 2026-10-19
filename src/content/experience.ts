@@ -5,6 +5,7 @@ import type { ExperienceInput } from "@/lib/schema";
 export const experience: ExperienceInput[] = [
   {
     company: "Niural AI",
+    logo: { src: "/experience/niural.png" },
     type: "Full-time",
     roles: [
       {
@@ -36,6 +37,7 @@ export const experience: ExperienceInput[] = [
   },
   {
     company: "Vairav Tech",
+    logo: { src: "/experience/vairav-tech.png", shape: "wordmark" },
     type: "Full-time",
     workMode: "On-site",
     location: "Baluwatar, Kathmandu",
@@ -71,6 +73,7 @@ export const experience: ExperienceInput[] = [
   },
   {
     company: "Proshore Nepal",
+    logo: { src: "/experience/proshore.png" },
     type: "Internship",
     roles: [
       {
